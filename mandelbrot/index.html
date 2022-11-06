@@ -58,7 +58,7 @@
             const hue = 30 + Math.round(120 * result * 1.2 / maxIterations);
             const color = `hsl(${hue}, 100%, 50%)`;
 
-            pixel(x, y, color)
+            pixel(x, y, color);
           }
 
           im += imStep;
@@ -70,7 +70,7 @@
       // console.log(`Outer - ${outer}, Inner - ${inner}`)
     }
 
-    const iterations = [5, 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 250, 300];
+    const iterations = [10, 20, 30, 50, 100, 150, 200, 250, 300, 350, 400];
     let index = 0;
 
     const intervalId = setInterval(() => {
@@ -79,7 +79,7 @@
       if (++index >= iterations.length) {
         clearInterval(intervalId);
       }
-    }, 100)
+    }, 50)
   </script>
 </body>
 </html>
