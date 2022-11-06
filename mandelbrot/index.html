@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mandelbrot Fractal</title>
+</head>
+<body>
+  <canvas id="mandelbrot" width="450" height="300"></canvas>
+  
+  <script type="module">
+    import Complex from '../utils/Complex.js'
+
+    const mandelbrotCanvas = document.getElementById('mandelbrot');
+    const canvasContext = mandelbrotCanvas.getContext('2d');
+
+    function belongs(real, imaginary, iterations) {
+      let z = new Complex(0, 0)
+      const c = new Complex(real, imaginary)
+      let i = 0;
+      
+      while (z.absolute() < 2 && i < iterations) {
+        z = z.multiply(z).add(c);
+        i++;
+      }
+      return i;
+    }
+
+    function pixel(x, y, color) {
+      canvasContext.fillStyle = color;
+      canvasContext.fillRect(x, y, 1, 1);
+    }
+
+    function draw(width, height, maxIterations) {
+      // const minRe = -2, maxRe = -1, // zoomed out
+      //       minIm = -1, maxIm = 1;
+      const minRe = -1.5, maxRe = -1.2, // zoomed in
+            minIm = -0.1, maxIm = 0.1;
+
+      const reStep = (maxRe - minRe) / width;
+      const imStep = (maxIm - minIm) / height;
+
+      let re = minRe;
+
+      let outer = 0, inner = 1;
+
+      while (re < maxRe) {
+        let im = minIm;
+        while (im < maxIm) {
+          const result = belongs(re, im, maxIterations);
+          const x = (re - minRe) / reStep;
+          const y = (im - minIm) / imStep;
+
+          if (result === maxIterations) {
+            pixel(x, y, 'black')
+          } else {
+            const hue = 30 + Math.round(120 * result * 1.2 / maxIterations);
+            const color = `hsl(${hue}, 100%, 50%)`;
+
+            pixel(x, y, color)
+          }
+
+          im += imStep;
+          // inner++;
+        }
+        re += reStep;
+        // outer++;
+      }
+      // console.log(`Outer - ${outer}, Inner - ${inner}`)
+    }
+
+    const iterations = [5, 10, 15, 25, 50, 75, 100, 125, 150, 175, 200, 250, 300];
+    let index = 0;
+
+    const intervalId = setInterval(() => {
+      draw(450, 300, iterations[index]);
+
+      if (++index >= iterations.length) {
+        clearInterval(intervalId);
+      }
+    }, 100)
+  </script>
+</body>
+</html>
